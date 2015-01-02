@@ -46,7 +46,7 @@
 				<!--
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="#">About</a>
+                        <a href="#">Cats</a>
                     </li>
                 </ul>
 				-->
@@ -61,25 +61,25 @@
 
         <div class="row">
 
+			<!--
             <div class="col-lg-12">
                 <h1 class="page-header">GIFS Gallery</h1>
             </div>
+			-->
 
-            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
-                <a class="thumbnail" href="#">
-                    <img class="img-responsive" src="http://i.imgur.com/kn3IsaM.gif" alt="">
-                </a>
-            </div>
-            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
-                <a class="thumbnail" href="#">
-                    <img class="img-responsive" src="http://i.imgur.com/WPGftnd.gif" alt="">
-                </a>
-            </div>
-            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
-                <a class="thumbnail" href="#">
-                    <img class="img-responsive" src="http://i.imgur.com/5irRQLe.gif" alt="">
-                </a>
-            </div>
+			<div id="target">Loading...</div>
+			<script id="template" type="x-tmpl-mustache">
+				{{#misc}}
+				<div class="col-lg-3 col-md-4 col-xs-6 thumb">
+					<a class="thumbnail" href="javascript:void(0)" data-src="{{gif}}">
+						<img class="img-responsive" src="{{static}}" alt="">
+						<span class="play"></span>
+						<span class="loading"></span>
+					</a>
+				</div>
+				{{/misc}}
+			</script>
+			
         </div>
 
         <hr>
@@ -96,11 +96,62 @@
     </div>
     <!-- /.container -->
 
-    <!-- jQuery -->
     <script src="js/jquery.js"></script>
-
-    <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/mustache.min.js"></script>
+    <script src="js/imagesloaded.min.js"></script>
+    <script src="js/masonry.min.js"></script>
+	<script>
+	$(document).ready(function() {
+	
+		// ze gifs
+		var gifs = {
+			"misc": [
+				{"static": "https://i.imgur.com/kn3IsaMh.jpg", "gif": "http://i.imgur.com/kn3IsaM.gif"},
+				{"static": "https://i.imgur.com/WPGftndh.jpg", "gif": "http://i.imgur.com/WPGftnd.gif"},
+				{"static": "https://i.imgur.com/5irRQLeh.jpg", "gif": "http://i.imgur.com/5irRQLe.gif"},
+			]
+		};
+		
+		// render template
+		var template = $('#template').html();
+		Mustache.parse(template);
+		var rendered = Mustache.render(template, gifs);
+		$('#target').html(rendered);
+		
+		// masonry grid
+		var $container = $('#target');
+			$container.imagesLoaded( function() {
+			$container.masonry({
+				itemSelector: '.thumb',
+				columnWidth: '.thumb'
+			});
+		});
+		
+		// play
+		$('a.thumbnail').on('click', function() {
+			var link = $(this);
+			var data_src = link.attr('data-src');
+			var img_src = link.find('img').attr('src');
+			
+			link.find('.loading').show();
+			link.find('img')
+				.load(function() { 
+					link.find('.loading').hide(); 
+				})
+				.attr('src', data_src);
+			link.attr('data-src', img_src);
+			
+			if (link.hasClass('playing')) {
+				link.find('.play').show();
+				link.removeClass('playing');
+			} else {
+				link.find('.play').hide();
+				link.addClass('playing');
+			}
+		});
+	});
+	</script>
 
 </body>
 

@@ -15,3 +15,35 @@ body {
 footer {
     margin: 50px 0;
 }
+
+.thumbnail {
+	position: relative;
+	margin-bottom: 0;
+}
+
+.play {
+	background: url('../img/1420251491_player_play.png') no-repeat top left;
+	width: 64px;
+	height: 64px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -32px;
+	margin-left: -32px;
+}
+
+.loading {
+	display: none;
+	background: url('../img/ajax-loader.gif') no-repeat top left;
+	width: 32px;
+	height: 32px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -16px;
+	margin-left: -16px;
+}
+
+#target[data-columns]::before {
+        content: '4 .col-xs-3';
+    }
